@@ -25,11 +25,15 @@ namespace Movies.BLL.Repositories
 
         public  async Task<IEnumerable<T>> GetAllAsync()
         {
-           return  await _context.Set<T>().ToListAsync();
+            if(typeof(T)==typeof(Movie))
+                return (IEnumerable<T>) await _context.Movies.Include(M=>M.Category).ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int? id)
         {
+            if (typeof(T) == typeof(Movie))
+                return  await _context.Movies.Include(m=>m.Category).FirstOrDefaultAsync(m=>m.Id==id) as T;
             return await _context.Set<T>().FindAsync(id);
         }
 

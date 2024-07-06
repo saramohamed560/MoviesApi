@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Movies.BLL;
 using Movies.BLL.Interfaces;
 using Movies.DAL.Data;
+using Movies.PL.Helpers;
 
 namespace MoviesApi
 {
@@ -20,7 +21,7 @@ namespace MoviesApi
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
-
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddCors();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

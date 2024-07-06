@@ -9,5 +9,6 @@ namespace Movies.BLL.Interfaces
 {
     public interface ICategoryRepository:IGenericRepository<Category>
     {
+       Task< bool> IsValidCategory(int  id);
     }
 }

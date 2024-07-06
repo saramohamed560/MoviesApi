@@ -9,5 +9,6 @@ namespace Movies.BLL.Interfaces
 {
     public interface IMovieRepository:IGenericRepository<Movie>
     {
+        Task<IEnumerable<Movie>> GetByCategoryIdAsync(int id);
     }
 }
