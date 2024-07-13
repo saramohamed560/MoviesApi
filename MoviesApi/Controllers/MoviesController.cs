@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.BLL.Interfaces;
@@ -47,7 +49,7 @@ namespace Movies.PL.Controllers
             var mappedMovies = _mapper.Map<IEnumerable<Movie>, IEnumerable<MoviesDetailsDto>>(movies);
             return Ok(mappedMovies);
         }
-
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         public async Task<ActionResult<Movie>> CreateMovie([FromForm] MovieDto dto)
         {
@@ -70,7 +72,9 @@ namespace Movies.PL.Controllers
             return Ok(mappedMovie);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("{id}")]
+
         public async Task<ActionResult<Movie>> UpdateAsync (int id,[FromForm]MovieDto dto)
         {
             var movie = await _unitOfWork.MovieRepository.GetByIdAsync(id);
@@ -101,6 +105,7 @@ namespace Movies.PL.Controllers
 
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Movie>> DeleteAsync(int id)
         {
