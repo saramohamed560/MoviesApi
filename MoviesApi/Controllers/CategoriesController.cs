@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movies.BLL.Interfaces;
@@ -20,14 +22,22 @@ namespace Movies.PL.Controllers
         }
         //Get All Categories
         [HttpGet]
-        public async Task<ActionResult<Category>> GetAllCategories()
+        public async Task<ActionResult<IReadOnlyList<Category>>> GetAllCategories()
         {
             var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
 
             return Ok(categories);
         }
-
-        //Cteate Category
+        //Get By Id
+        [HttpGet("{id}")]
+        public async  Task<ActionResult<Category>>GetById(int id)
+        {
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
+            if(category is null)return NotFound($"Category with id {id} is not found ");
+            return Ok(category);
+        }
+        //Create Category
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         public async Task<ActionResult<Category>> CreateCategory(CategoryDto categoryDto)
         {
@@ -41,6 +51,7 @@ namespace Movies.PL.Controllers
         }
 
         //Edit Category 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("{id}")]
         public async Task<ActionResult<Category>> UpdateCategory(int id, [FromBody] CategoryDto dto)
         {
@@ -51,6 +62,8 @@ namespace Movies.PL.Controllers
             await _unitOfWork.Complete();
             return Ok(category);
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Category>> DeleteCategory(int id)
         {
